@@ -1,0 +1,2 @@
+void LED_binDisplay(short i);
+void loop(int n);
