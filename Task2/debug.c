@@ -13,10 +13,16 @@ int DEBUG_write(char* string)
 }
 
 int DEBUG_write_int(char* formatString, int data)
-{
-	char buf[sizeof(int)*3+26];
+{	
+	char buf[sizeof(int)*3+strlen(formatString)+1];
 	snprintf(buf, sizeof buf, formatString, data);
 	return(DEBUG_write(buf));
+}
+
+// Write options
+int write_usb_serial_blocking(char *buf,int length)
+{
+	return(UART_Send((LPC_UART_TypeDef *)LPC_UART0,(uint8_t *)buf,length, BLOCKING));
 }
 
 // Read options
@@ -25,11 +31,6 @@ int read_usb_serial_none_blocking(char *buf,int length)
 	return(UART_Receive((LPC_UART_TypeDef *)LPC_UART0, (uint8_t *)buf, length, NONE_BLOCKING));
 }
 
-// Write options
-int write_usb_serial_blocking(char *buf,int length)
-{
-	return(UART_Send((LPC_UART_TypeDef *)LPC_UART0,(uint8_t *)buf,length, BLOCKING));
-}
 void DEBUG_init(void)
 // init code for the USB serial line
 {

@@ -41,7 +41,23 @@ int LCD_write(char* string, int line)
 	{
 		result = LCD_send_char(*string);
 		if (result == 0) return(0);
-		string += 1;
+		string++;
+	}
+	
+	return(1);
+}
+
+int LCD_write_length(char* string, int line, int length)
+{
+	uint8_t buf[] = {0x00, line ? 0xC0 : 0x80};
+	int result = I2C_send(LCD,buf,2);
+	if (result == 0) return(0);
+	
+	int i;
+	for (i = 0; i < length; i++)
+	{
+		result = LCD_send_char(string[i]);
+		if (result == 0) return(0);
 	}
 	
 	return(1);
@@ -49,7 +65,8 @@ int LCD_write(char* string, int line)
 
 int LCD_write_int(int i, int line)
 {
-	char buf[sizeof(int)*3+26];
+	char buf[sizeof(int)*3];
+	snprintf(buf, sizeof buf, "%d", i);
 	return (LCD_write(buf, line));
 }
 
