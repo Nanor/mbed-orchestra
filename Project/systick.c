@@ -1,5 +1,6 @@
 #include "systick.h"
 #include "lpc17xx_systick.h"
+#include "debug.h"
 
 void SYSTICK_init()
 {
@@ -19,12 +20,10 @@ void SysTick_Handler(void)
 	}
 }
 
-void SYSTICK_wait(float time)
+void SYSTICK_wait(float delay)
 {
-	int count = (int) (time * 10);
+	int count = (int) (delay * 10);
 	time = 0;
-	
 	while (time < count);
-	
 	time = -1;
 }

@@ -1,2 +1,2 @@
 void SYSTICK_init();
-void SYSTCIK_wait(float time);
+void SYSTICK_wait(float delay);

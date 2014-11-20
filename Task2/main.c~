@@ -54,8 +54,7 @@ void main(void)
 {
 	DEBUG_init();
 	I2C_init();
-	//SYSTICK_init();
-	LCD_init();
+	LCD_init();cat
 	
 	int count = 0;
 	
