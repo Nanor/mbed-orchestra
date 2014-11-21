@@ -11,7 +11,7 @@ void ADC_init()
 	PinCfg.Pinnum = 30;
 	PINSEL_ConfigPin(&PinCfg);
 	
-	ADC_Init(LPC_ADC, 2000);
+	ADC_Init(LPC_ADC, 20000);
 	ADC_ChannelCmd(LPC_ADC, 4, ENABLE);
 	
 	ADC_ChannelGetData(LPC_ADC, 4);

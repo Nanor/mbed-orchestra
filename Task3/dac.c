@@ -1,3 +1,6 @@
+#include "lpc17xx_pinsel.h"
+#include "lpc17xx_dac.h"
+
 #include "dac.h"
 
 void DAC_init()

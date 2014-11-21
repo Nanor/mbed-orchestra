@@ -20,7 +20,6 @@ void ADC_init()
 uint16_t ADC_read()
 {
 	ADC_StartCmd(LPC_ADC, ADC_START_NOW);
-	//int result = ADC_ChannelGetData(LPC_ADC, 4);
 	while(!ADC_ChannelGetStatus(LPC_ADC, 4, 1));
 	
 	return(ADC_ChannelGetData(LPC_ADC, 4));
