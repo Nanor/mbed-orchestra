@@ -19,14 +19,23 @@ void main(void)
 	DAC_init();
 	LCD_init();
 	DEBUG_init();
-	SYSTICK_init(10);
+	SYSTICK_init(20);
 }
+
+int c = 0;
 
 void SysTick_Handler(void) 
 {
+	c++;
+
 	int value = ADC_read();
 		
 	DAC_send(value/4);
+	
+	if(c % 50 == 0)
+	{
+		DEBUG_write_float("%f\r\n", value*3.3/4096);
+	}
 }	
 
 /*

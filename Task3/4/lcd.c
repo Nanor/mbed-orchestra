@@ -1,0 +1,79 @@
+#include "lcd.h"
+
+int LCD_init(void)
+{
+	I2C_init();
+
+	uint8_t data[] = {0x00,0x35,0x00,0x9F,0x00,0x34,0x00,0x0C,0x00,0x02,0x00,0x01,0x00,0x80};
+
+	return(I2C_send(LCD,data,14));
+}
+
+int LCD_send_char(char c)
+{
+	uint8_t buf[] = {0x40,0x00};
+
+	if (c >= '0' && c <= '9')
+	{
+		buf[1] = 0xB0 + (c-'0');
+	}
+	else if (c >= 'A' && c <= 'Z')
+	{
+		buf[1] = 0xC1 + (c-'A');
+	}
+	else if (c >= 'a' && c <= 'z')
+	{
+		buf[1] = 0xE1 + (c-'a');
+	}
+	else if (c >= ' ' && c <= '?')
+	{
+		buf[1] = 0xA0 + (c-' ');
+	}
+	
+	return(I2C_send(LCD,buf,2));
+}
+
+int LCD_write(char* string, int line)
+{
+	uint8_t buf[] = {0x00, line ? 0xC0 : 0x80};
+	int result = I2C_send(LCD,buf,2);
+	if (result == 0) return(0);
+	
+	while(*string != '\0')
+	{
+		result = LCD_send_char(*string);
+		if (result == 0) return(0);
+		string++;
+	}
+	
+	return(1);
+}
+
+int LCD_write_length(char* string, int line, int length)
+{
+	uint8_t buf[] = {0x00, line ? 0xC0 : 0x80};
+	int result = I2C_send(LCD,buf,2);
+	if (result == 0) return(0);
+	
+	int i;
+	for (i = 0; i < length; i++)
+	{
+		result = LCD_send_char(string[i]);
+		if (result == 0) return(0);
+	}
+	
+	return(1);
+}
+
+int LCD_write_int(int i, int line)
+{
+	char buf[sizeof(int)*3];
+	snprintf(buf, sizeof buf, "%d", i);
+	return (LCD_write(buf, line));
+}
+
+int LCD_clear(void)
+{
+	uint8_t buf[] = {0x00,0x01,0x00,0x80};
+	return(I2C_send(LCD,buf,4));
+}
