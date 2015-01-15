@@ -34,7 +34,7 @@ LDFLAGS+=-L$(CMSIS)/lib -lDriversLPC17xxgnu
 
 EXECNAME	= bin/main
 
-OBJ		= main.o 
+OBJ		= i2c.o debug.o lcd.o main.o
 
 all: 	serial
 	@echo "Build finished"

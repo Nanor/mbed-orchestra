@@ -1,1 +1,1 @@
-void GPIO_Set(int port, int pin, int value);
+void GPIO_set(int port, int pin, int value);

@@ -68,7 +68,5 @@ int LCD_clear(void)
 	for (i=0x80;i<0xD0;i++){
 		if (LCD_send(' ') == 0) return 0;
 	}
-	LCD_set_pos(0,0);
-	
 	return 1;	
 }
