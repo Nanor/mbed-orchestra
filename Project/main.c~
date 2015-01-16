@@ -3,8 +3,15 @@
 
 int main()
 {
-	DEBUG_write("Hello");
-	DEBUG_write_int("i=%d",4);
-
-	return 0;
+	DEBUG_init();	
+	LCD_init();
+	
+	DEBUG_write("Peripherals Initialised\r\n");
+	
+	DEBUG_write("Starting synth\r\n");
+	synth_init();
+	DEBUG_write("Done\r\n");
+	
+	while(1);
+	return(1);
 }
