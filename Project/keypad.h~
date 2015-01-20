@@ -18,4 +18,4 @@
 #define KeyD 0x0001
 
 uint16_t KEYPAD_get_keys();
-int KEYPAD_get_key();
+int KEYPAD_get_char();

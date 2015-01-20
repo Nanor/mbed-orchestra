@@ -23,7 +23,7 @@ uint16_t KEYPAD_get_keys()
 	return(output);
 }
 
-int KEYPAD_get_key()
+int KEYPAD_get_char()
 {
 	uint16_t keys = KEYPAD_get_keys();
 	
