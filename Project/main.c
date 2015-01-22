@@ -23,6 +23,7 @@ int main()
 
 		if ((key != -1) && !down)
 		{
+			//int note = 21 + (key * (33-21));
 			int note = 69+key;
 			synth_note_on(note_to_freq(note),1.0);
 			LCD_write_int("%d",note_to_freq(note));

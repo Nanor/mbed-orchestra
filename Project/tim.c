@@ -4,7 +4,7 @@
 #include "tim.h"
 #include "synth.h"
 
-#define INT_ONE_SEC 1000000
+#define INT_ONE_SEC 970000
 
 void TIM_init()
 {
