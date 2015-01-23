@@ -3,6 +3,7 @@
 #include "lcd.h"
 #include "synth.h"
 #include "keypad.h"
+#include "can.h"
 
 int main()
 {
@@ -11,6 +12,9 @@ int main()
 	LCD_init();
 
 	synth_init();
+	DEBUG_write("Initialising CAN\r\n");
+	CAN_init();
+	DEBUG_write("CAN Initialised\r\n");
 
 	int down = 0;
 	int key = -1;
@@ -40,3 +44,5 @@ int main()
 	while(1);
 	return(1);
 }
+
+
