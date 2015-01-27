@@ -4,7 +4,7 @@
 #include "tim.h"
 #include "synth.h"
 
-#define INT_ONE_SEC 970000
+#define INT_ONE_SEC 1000000
 
 void TIM_init()
 {
@@ -25,7 +25,6 @@ void TIM_init()
 	
 	TIM_UpdateMatchValue(LPC_TIM0, 0, INT_ONE_SEC);
 
-	/* preemption = 1, sub-priority = 1 */
 	NVIC_SetPriority(TIMER0_IRQn, ((0x01<<3)|0x01));
 	/* Enable interrupt for timer 0 */
 	NVIC_EnableIRQ(TIMER0_IRQn);

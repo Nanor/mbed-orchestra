@@ -7,27 +7,25 @@
 
 int main()
 {
+	// Peripheral initialisation
 	I2C_init();
 	DEBUG_init();	
 	LCD_init();
 
+	// Function initialisation
 	synth_init();
-	DEBUG_write("Initialising CAN\r\n");
 	CAN_init();
-	DEBUG_write("CAN Initialised\r\n");
-
-	int down = 0;
+	
+	// Keypad for synth debugging
+	/*int down = 0;
 	int key = -1;
 	
 	while(1)
 	{
-		//LCD_clear();
 		key = KEYPAD_get_key();
-		//LCD_write_int("%d",key);
 
 		if ((key != -1) && !down)
 		{
-			//int note = 21 + (key * (33-21));
 			int note = 69+key;
 			synth_note_on(note_to_freq(note),1.0);
 			LCD_write_int("%d",note_to_freq(note));
@@ -39,8 +37,9 @@ int main()
 			LCD_clear();
 			down = 0;
 		}
-	}
+	}*/
 	
+	// Loop to allow interupts
 	while(1);
 	return(1);
 }

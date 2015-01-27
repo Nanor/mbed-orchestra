@@ -19,7 +19,6 @@ int amptimer = 0;
 void synth_init()
 {
 	DAC_init();
-
 	TIM_init();
 	
 	amplitude = 0;
@@ -33,14 +32,9 @@ void synth_note_on(int freq, float amp)
 	noteDown = 1;
 }
 
-void synth_note_off(float fade)
+void synth_note_off()
 {
 	noteDown = 0;
-}
-
-float lerp(float a, float b, float t)
-{
-	return (float)((1-t)*a + t*b);
 }
 
 void synth_tick()
@@ -58,25 +52,20 @@ void synth_tick()
 		{
 			amplitude *= 0.95;
 		}
-		//amplitude *= 0.95;
-		/*
-		if (targetAmp == 0)
-		{
-			amplitude = lerp(amplitude, targetAmp, 0.05);
-		}
-		else
-		{
-			amplitude = lerp(amplitude, targetAmp, 0.5);
-		}*/
 	}
 	amptimer = (amptimer + 1) % frequency;
 	wavetimer = (wavetimer + 1) % wavelength;
 }
 
 int note_to_freq(int note)
-{
+{ // Convert MIDI note value to audio frequency
 	if ((note >= 0) && (note <= 119))
 		return 440 * pow(2, (note - 69) / 12.0);
 	else
 		return -1;
+}
+
+float lerp(float a, float b, float t)
+{ // Linearly interpolate between 2 values
+	return (float)((1-t)*a + t*b);
 }
