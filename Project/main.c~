@@ -19,11 +19,6 @@ int main()
 	
 	menu_display();
 	
-	while (1)
-	{
-		menu_update();
-	}
-	
 	// Keypad for synth debugging
 	/*int down = 0;
 	int key = -1;

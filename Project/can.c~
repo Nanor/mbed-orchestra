@@ -16,7 +16,7 @@
 #define BAUDRATE 250000
 
 CAN_MSG_Type TXMsg, RXMsg; 
-int channel = 1;
+int channel = -1;
 
 float mainVolume = 1.0f;
 
@@ -82,7 +82,12 @@ void CAN_IRQHandler()
 		if (control != NONE)
 		{	// If message if not a no-op
 		
-			if (channel == msgchan)
+			// If we don't have a channel, get the first channel played
+			if (channel == -1)
+			{
+				channel = msgchan;
+			}
+			else if (channel == msgchan)
 			{		
 				switch (control)
 				{
@@ -109,9 +114,4 @@ void CAN_IRQHandler()
 void set_volume(float vol)
 {
 	mainVolume = vol;
-}
-
-void set_channel(int chan)
-{
-	channel = chan;
 }
