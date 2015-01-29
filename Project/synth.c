@@ -4,16 +4,16 @@
 
 #include "waveform.c"
 
-#define ONE_SEC 44100
-#define WAVE_SKIP 3
+#define WAVELENGTH (sizeof(waveform)/sizeof(waveform[0]))
 
 float amplitude;
 int frequency;
 
 int noteDown = 0;
 
-int wavetimer = 0;
-int wavelength = (sizeof(waveform)/sizeof(waveform[0]))/WAVE_SKIP;
+int timer = 0;
+//int wavetimer = 0;
+int voice = 0;
 int amptimer = 0;
 
 void synth_init()
@@ -27,7 +27,7 @@ void synth_init()
 void synth_note_on(int freq, float amp)
 {
 	frequency = freq;
-	TIM_update_match(freq * wavelength);
+	//TIM_update_match(freq * wavelength);
 	amplitude = amp;
 	noteDown = 1;
 }
@@ -39,7 +39,9 @@ void synth_note_off()
 
 void synth_tick()
 {	
-	int value = (int)(waveform[wavetimer*WAVE_SKIP] * amplitude * 512 + 511);
+	timer = (timer + 1) % ((INT_ONE_SEC / UPDATE) / frequency);
+	
+	int value = (int)(waveform[WAVELENGTH * timer / ((INT_ONE_SEC / UPDATE) / frequency)] * amplitude * 512 + 511);
 	DAC_send(value);
 
 	if (amptimer == 0)
@@ -53,8 +55,8 @@ void synth_tick()
 			amplitude *= 0.95;
 		}
 	}
-	amptimer = (amptimer + 1) % frequency;
-	wavetimer = (wavetimer + 1) % wavelength;
+	amptimer = (amptimer + 1) % 100;
+	//wavetimer = (wavetimer + 1) % wavelength;
 }
 
 int note_to_freq(int note)

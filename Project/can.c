@@ -83,14 +83,16 @@ void CAN_IRQHandler()
 		{	// If message if not a no-op
 		
 			if (channel == msgchan)
-			{		
+			{			
 				switch (control)
 				{
 					case ON: // Note start
 						synth_note_on(note_to_freq(note), ((float)volume / pow(2,8)) * mainVolume);
+						//DEBUG_write_int("Note on %d\r\n",note);
 						break;
 					case OFF: // Note stop
 						synth_note_off();
+						//DEBUG_write("Note off\r\n");
 						break;
 					case PAR: // Control parameter
 						break;

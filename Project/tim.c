@@ -4,8 +4,6 @@
 #include "tim.h"
 #include "synth.h"
 
-#define INT_ONE_SEC 1000000
-
 void TIM_init()
 {
 	TIM_TIMERCFG_Type config;
@@ -23,16 +21,18 @@ void TIM_init()
 	
 	TIM_ConfigMatch(LPC_TIM0, &match);
 	
-	TIM_UpdateMatchValue(LPC_TIM0, 0, INT_ONE_SEC);
+	TIM_UpdateMatchValue(LPC_TIM0, 0, UPDATE);
 
 	NVIC_SetPriority(TIMER0_IRQn, ((0x01<<3)|0x01));
 	/* Enable interrupt for timer 0 */
 	NVIC_EnableIRQ(TIMER0_IRQn);
+	
+	TIM_Cmd(LPC_TIM0,ENABLE);
 }
 
 void TIM_update_match(int freq)
 {
-	TIM_UpdateMatchValue(LPC_TIM0, 0, (int)(INT_ONE_SEC/freq));
+	TIM_UpdateMatchValue(LPC_TIM0, 0, (int)(UPDATE));
 	TIM_ResetCounter(LPC_TIM0);
 	TIM_Cmd(LPC_TIM0,ENABLE);
 }
