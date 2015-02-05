@@ -1,6 +1,7 @@
 #include "dac.h"
 #include "tim.h"
 #include <math.h>
+#include "synth.h"
 
 #include "waveform.c"
 
@@ -10,6 +11,7 @@ float amplitude;
 int frequency;
 
 int noteDown = 0;
+int wavelength = WAVELENGTH;
 
 int timer = 0;
 //int wavetimer = 0;
@@ -39,9 +41,11 @@ void synth_note_off()
 
 void synth_tick()
 {	
-	timer = (timer + 1) % ((INT_ONE_SEC / UPDATE) / frequency);
+	int maxValue = ((INT_ONE_SEC / UPDATE) / frequency);
+
+	timer = (timer + 1) % maxValue;
 	
-	int value = (int)(waveform[WAVELENGTH * timer / ((INT_ONE_SEC / UPDATE) / frequency)] * amplitude * 512 + 511);
+	int value = (int)(waveform[(int)lerp(0, wavelength, (float)timer / maxValue)] * amplitude * 512 + 511);
 	DAC_send(value);
 
 	if (amptimer == 0)

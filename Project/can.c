@@ -6,8 +6,8 @@
 #include "math.h"
 
 #define NONE 0
-#define OFF 1
-#define ON 2
+#define OFF 2
+#define ON 1
 #define PAR 3
 #define PB 4
 #define CHPR 5
@@ -85,7 +85,12 @@ void CAN_IRQHandler()
 		uint8_t volume = RXMsg.dataA[2];
 		uint8_t type = RXMsg.dataA[3];
 		uint8_t control = RXMsg.dataB[0];
-
+/*
+		DEBUG_write_int("Note = %3d ", note);
+		DEBUG_write_int("Vol  = %3d ", volume);
+		DEBUG_write_int("Chan = %3d ",msgchan);
+		DEBUG_write_int("Type = %3d\r\n", control);
+*/
 		if (control != NONE)
 		{	// If message if not a no-op
 			if(control == ON)
@@ -109,7 +114,15 @@ void CAN_IRQHandler()
 			
 			if (channel == msgchan)
 			{			
-				switch (control)
+				if (note)
+				{
+					synth_note_on(note_to_freq(note), ((float)volume / pow(2,8)) * mainVolume);
+				}
+				else
+				{
+					synth_note_off();
+				}
+				/*switch (control)
 				{
 					case ON: // Note start
 						synth_note_on(note_to_freq(note), ((float)volume / pow(2,8)) * mainVolume);
@@ -127,7 +140,7 @@ void CAN_IRQHandler()
 						break;
 					case PRCH: // Controller pressure
 						break;
-				}
+				}*/
 			}
 		}
 	}
