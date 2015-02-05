@@ -19,6 +19,7 @@ CAN_MSG_Type TXMsg, RXMsg;
 int channel = 1;
 
 float mainVolume = 1.0f;
+int canActive[16];
 
 void CAN_init()
 {
@@ -45,6 +46,12 @@ void CAN_init()
 	CAN_InitMessage();
 	NVIC_SetPriority(CAN_IRQn, ((0x01<<3)|0x01));
 	NVIC_EnableIRQ(CAN_IRQn);
+	
+	int i;
+	for(i=0; i < 16; i++)
+	{
+		canActive[i] = 0;
+	}
 }
 
 void CAN_InitMessage(void)
@@ -81,7 +88,25 @@ void CAN_IRQHandler()
 
 		if (control != NONE)
 		{	// If message if not a no-op
-		
+			if(control == ON)
+			{
+				int i;
+				for(i=0; i < 16; i++)
+				{
+					if(msgchan-1 == i)
+					{
+						canActive[i] = 20;
+					}
+					else
+					{
+						if (canActive[i])
+							canActive[i]--;
+					}
+					//DEBUG_write_int("%d ",canActive[i]);
+				}
+				//DEBUG_write("\r\n");
+			}
+			
 			if (channel == msgchan)
 			{			
 				switch (control)
@@ -106,6 +131,32 @@ void CAN_IRQHandler()
 			}
 		}
 	}
+}
+
+int find_channel_up(int current)
+{
+	int i;
+	for(i = current-1+1; i < 16; i++)
+	{
+		if(canActive[i])
+		{
+			return i+1;
+		}
+	}
+	return current;
+}
+
+int find_channel_down(int current)
+{
+	int i;
+	for(i = current-1-1; i >= 0; i--)
+	{
+		if(canActive[i])
+		{
+			return i+1;
+		}
+	}
+	return current;
 }
 
 void set_volume(float vol)

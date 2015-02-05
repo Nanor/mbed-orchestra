@@ -23,7 +23,6 @@ void TIM_init()
 	
 	TIM_UpdateMatchValue(LPC_TIM0, 0, UPDATE);
 
-	NVIC_SetPriority(TIMER0_IRQn, ((0x01<<3)|0x01));
 	/* Enable interrupt for timer 0 */
 	NVIC_EnableIRQ(TIMER0_IRQn);
 	

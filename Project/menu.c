@@ -45,6 +45,7 @@ void menu_update()
 		case 4:
 			if (menu_channel > 1)
 			{
+				synth_note_off();
 				menu_channel--;
 				set_channel(menu_channel);
 				menu_display();		
@@ -53,10 +54,23 @@ void menu_update()
 		case 5:
 			if (menu_channel < 16)
 			{
+				synth_note_off();
 				menu_channel++;
 				set_channel(menu_channel);
 				menu_display();		
 			}
+			break;
+		case 7:
+			menu_channel = find_channel_down(menu_channel);
+			synth_note_off();
+			set_channel(menu_channel);
+			menu_display();		
+			break;
+		case 8:
+			menu_channel = find_channel_up(menu_channel);
+			synth_note_off();
+			set_channel(menu_channel);
+			menu_display();		
 			break;
 	}
 }

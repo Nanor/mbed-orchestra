@@ -1,5 +1,6 @@
 #include "lpc17xx_i2c.h"
 #include "lpc17xx_pinsel.h"
+#include "debug.h"
 
 #include "i2c.h"
 
@@ -20,6 +21,13 @@ void I2C_init()
 	
 	I2C_Init(LPC_I2C1, 100000); // Initialize I2C peripheral
 	I2C_Cmd(LPC_I2C1, ENABLE); // Enable I2C1 operation 
+	
+	//NVIC_EnableIRQ(I2C1_IRQn);
+}
+
+I2C1_IRQHandler()
+{
+	DEBUG_write("keypress");
 }
 
 int I2C_send(uint32_t address, uint8_t* data, uint32_t length)
