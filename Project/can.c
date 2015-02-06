@@ -77,22 +77,52 @@ void CAN_IRQHandler()
 	IntStatus = CAN_IntGetStatus(LPC_CAN2);
 
 	if((IntStatus>>0)&0x01)
-	{
-		// Unpack message data
-		CAN_ReceiveMsg(LPC_CAN2,&RXMsg);
-		uint8_t msgchan = RXMsg.dataA[0];
-		uint8_t note = RXMsg.dataA[1];
-		uint8_t volume = RXMsg.dataA[2];
-		uint8_t type = RXMsg.dataA[3];
-		uint8_t control = RXMsg.dataB[0];
-/*
-		DEBUG_write_int("Note = %3d ", note);
-		DEBUG_write_int("Vol  = %3d ", volume);
-		DEBUG_write_int("Chan = %3d ",msgchan);
-		DEBUG_write_int("Type = %3d\r\n", control);
-*/
-		if (control != NONE)
-		{	// If message if not a no-op
+	{	
+		//DEBUG_write_int("%d\r\n",RXMsg.len);
+		if (RXMsg.dataB[3] & 0x01)
+		{
+			// Text data
+			//DEBUG_write("Text data recieved\n\r");
+			//if (RXMsg.dataB[3] & 0x02)
+			//	DEBUG_write("Text end\r\n");
+			/*
+			DEBUG_write_int("%c", RXMsg.dataA[0]);
+			DEBUG_write_int("%c", RXMsg.dataA[1]);
+			DEBUG_write_int("%c", RXMsg.dataA[2]);
+			DEBUG_write_int("%c", RXMsg.dataA[3]);
+			DEBUG_write_int("%c", RXMsg.dataB[0]);
+			DEBUG_write_int("%c", RXMsg.dataB[1]);
+			DEBUG_write_int("%c", RXMsg.dataB[2]);
+			DEBUG_write_int("%c\r\n", RXMsg.dataB[3]);*/
+		}
+		else
+		{
+			// Unpack message data
+			CAN_ReceiveMsg(LPC_CAN2,&RXMsg);
+			uint8_t msgchan = RXMsg.dataA[0];
+			uint8_t note = RXMsg.dataA[1];
+			uint8_t volume = RXMsg.dataA[2];
+			uint8_t type = RXMsg.dataA[3];
+			uint8_t control = RXMsg.dataB[0];
+	
+			//DEBUG_write_int("Note = %3d ", note);
+			//DEBUG_write_int("Vol  = %3d ", volume);
+			//DEBUG_write_int("Chan = %3d ",msgchan);
+			//DEBUG_write_int("Type = %3d", type);
+			//DEBUG_write_int("Control = %3d\r\n", control);
+	
+			if (channel == msgchan)
+			{						
+				if (control == ON)
+				{
+					synth_note_on(note_to_freq(note), ((float)volume / pow(2,8)) * mainVolume);
+				}
+				else
+				{
+					synth_note_off();
+				}
+			}
+
 			if(control == ON)
 			{
 				int i;
@@ -107,40 +137,7 @@ void CAN_IRQHandler()
 						if (canActive[i])
 							canActive[i]--;
 					}
-					//DEBUG_write_int("%d ",canActive[i]);
 				}
-				//DEBUG_write("\r\n");
-			}
-			
-			if (channel == msgchan)
-			{			
-				if (note)
-				{
-					synth_note_on(note_to_freq(note), ((float)volume / pow(2,8)) * mainVolume);
-				}
-				else
-				{
-					synth_note_off();
-				}
-				/*switch (control)
-				{
-					case ON: // Note start
-						synth_note_on(note_to_freq(note), ((float)volume / pow(2,8)) * mainVolume);
-						//DEBUG_write_int("Note on %d\r\n",note);
-						break;
-					case OFF: // Note stop
-						synth_note_off();
-						//DEBUG_write("Note off\r\n");
-						break;
-					case PAR: // Control parameter
-						break;
-					case PB: // Pitch blend
-						break;
-					case CHPR: // Channel pressure
-						break;
-					case PRCH: // Controller pressure
-						break;
-				}*/
 			}
 		}
 	}

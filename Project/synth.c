@@ -9,6 +9,7 @@
 
 float amplitude;
 int frequency;
+int targetFreq;
 
 int noteDown = 0;
 int wavelength = WAVELENGTH;
@@ -28,10 +29,12 @@ void synth_init()
 
 void synth_note_on(int freq, float amp)
 {
-	frequency = freq;
+	//if (!noteDown) frequency = freq;
+	targetFreq = freq;
 	//TIM_update_match(freq * wavelength);
 	amplitude = amp;
 	noteDown = 1;
+	timer = 0;
 }
 
 void synth_note_off()
@@ -50,6 +53,8 @@ void synth_tick()
 
 	if (amptimer == 0)
 	{
+		frequency = lerp(frequency, targetFreq, 0.5);
+	
 		if (noteDown)
 		{
 			amplitude *= 0.995;
