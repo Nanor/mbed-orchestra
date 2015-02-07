@@ -78,14 +78,12 @@ void CAN_IRQHandler()
 
 	if((IntStatus>>0)&0x01)
 	{	
-		//DEBUG_write_int("%d\r\n",RXMsg.len);
-		if (RXMsg.dataB[3] & 0x01)
+		// Import data from CAN bus.
+		CAN_ReceiveMsg(LPC_CAN2,&RXMsg);
+		
+		if (RXMsg.len == 8)
 		{
 			// Text data
-			//DEBUG_write("Text data recieved\n\r");
-			//if (RXMsg.dataB[3] & 0x02)
-			//	DEBUG_write("Text end\r\n");
-			/*
 			DEBUG_write_int("%c", RXMsg.dataA[0]);
 			DEBUG_write_int("%c", RXMsg.dataA[1]);
 			DEBUG_write_int("%c", RXMsg.dataA[2]);
@@ -93,12 +91,12 @@ void CAN_IRQHandler()
 			DEBUG_write_int("%c", RXMsg.dataB[0]);
 			DEBUG_write_int("%c", RXMsg.dataB[1]);
 			DEBUG_write_int("%c", RXMsg.dataB[2]);
-			DEBUG_write_int("%c\r\n", RXMsg.dataB[3]);*/
+			DEBUG_write_int("%c\r\n", RXMsg.dataB[3]);
 		}
 		else
 		{
-			// Unpack message data
-			CAN_ReceiveMsg(LPC_CAN2,&RXMsg);
+			// Note playback
+			// Unpack message data for note playback
 			uint8_t msgchan = RXMsg.dataA[0];
 			uint8_t note = RXMsg.dataA[1];
 			uint8_t volume = RXMsg.dataA[2];
