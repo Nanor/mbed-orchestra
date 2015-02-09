@@ -91,7 +91,7 @@ void CAN_IRQHandler()
 			DEBUG_write_int("%c", RXMsg.dataB[0]);
 			DEBUG_write_int("%c", RXMsg.dataB[1]);
 			DEBUG_write_int("%c", RXMsg.dataB[2]);
-			DEBUG_write_int("%c\r\n", RXMsg.dataB[3]);
+			DEBUG_write_int("%c", RXMsg.dataB[3]);
 		}
 		else
 		{
@@ -110,14 +110,17 @@ void CAN_IRQHandler()
 			//DEBUG_write_int("Control = %3d\r\n", control);
 	
 			if (channel == msgchan)
-			{						
+			{	
+				DEBUG_write_int("Note = %3d ", note);
+				DEBUG_write_int("Control = %3d\r\n", control);
+												
 				if (control == ON)
 				{
 					synth_note_on(note_to_freq(note), ((float)volume / pow(2,8)) * mainVolume);
 				}
 				else
 				{
-					synth_note_off();
+					synth_note_off(note_to_freq(note));
 				}
 			}
 

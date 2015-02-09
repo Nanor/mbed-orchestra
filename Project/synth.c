@@ -5,67 +5,71 @@
 
 #include "waveform.c"
 
-#define WAVELENGTH (sizeof(waveform)/sizeof(waveform[0]))
+#define TRACKS 3
 
-float amplitude;
-int frequency;
-int targetFreq;
+float amplitude[TRACKS];
+int frequency[TRACKS];
+int targetFreq[TRACKS];
 
-int noteDown = 0;
-int wavelength = WAVELENGTH;
+int noteDown[TRACKS];
+int wavelength = (sizeof(waveform)/sizeof(waveform[0]));
 
 int timer = 0;
-//int wavetimer = 0;
-int voice = 0;
 int amptimer = 0;
+
+int track = 0;
 
 void synth_init()
 {
 	DAC_init();
 	TIM_init();
-	
-	amplitude = 0;
 }
 
 void synth_note_on(int freq, float amp)
 {
 	//if (!noteDown) frequency = freq;
-	targetFreq = freq;
-	//TIM_update_match(freq * wavelength);
-	amplitude = amp;
-	noteDown = 1;
-	timer = 0;
+	targetFreq[track] = freq;
+	amplitude[track] = amp;
+	noteDown[track] = 1;
+	
+	track = (track + 1) % TRACKS;
 }
 
-void synth_note_off()
+void synth_note_off(int freq)
 {
-	noteDown = 0;
+	int i;
+	for (i = 0; i < TRACKS; i++) {
+		if (targetFreq[i] == freq || freq == -1)
+			noteDown[i] = 0;
+	}
 }
 
 void synth_tick()
 {	
-	int maxValue = ((INT_ONE_SEC / UPDATE) / frequency);
-
-	timer = (timer + 1) % maxValue;
+	int i;
+	float value = 0;
+	for (i = 0; i < TRACKS; i++) {
+		int maxValue = ((INT_ONE_SEC / UPDATE) / frequency[i]);
 	
-	int value = (int)(waveform[(int)lerp(0, wavelength, (float)timer / maxValue)] * amplitude * 512 + 511);
-	DAC_send(value);
+		value += waveform[(int)lerp(0, wavelength, (float)(timer % maxValue) / maxValue)] * amplitude[i];
 
-	if (amptimer == 0)
-	{
-		frequency = lerp(frequency, targetFreq, 0.5);
+		if (amptimer == 0)
+		{
+			frequency[i] = lerp(frequency[i], targetFreq[i], 0.5);
 	
-		if (noteDown)
-		{
-			amplitude *= 0.995;
-		}
-		else
-		{
-			amplitude *= 0.95;
+			if (noteDown[i])
+			{
+				amplitude[i] *= 0.995;
+			}
+			else
+			{
+				amplitude[i] *= 0.95;
+			}
 		}
 	}
 	amptimer = (amptimer + 1) % 100;
-	//wavetimer = (wavetimer + 1) % wavelength;
+	timer = (timer + 1) % (INT_ONE_SEC / UPDATE);
+	DAC_send((int)((value / TRACKS) * 512 + 511));
 }
 
 int note_to_freq(int note)
