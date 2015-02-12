@@ -72,5 +72,9 @@ void menu_update()
 			set_channel(menu_channel);
 			menu_display();		
 			break;
+		case 13:
+			DEBUG_write("D\r\n");
+			synth_note_on(note_to_freq(69), 0.5);
+			break;
 	}
 }

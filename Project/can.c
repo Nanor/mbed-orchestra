@@ -111,8 +111,8 @@ void CAN_IRQHandler()
 	
 			if (channel == msgchan)
 			{	
-				DEBUG_write_int("Note = %3d ", note);
-				DEBUG_write_int("Control = %3d\r\n", control);
+				//DEBUG_write_int("Note = %3d ", note);
+				//DEBUG_write_int("Control = %3d\r\n", control);
 												
 				if (control == ON)
 				{

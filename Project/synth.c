@@ -27,8 +27,7 @@ void synth_init()
 
 void synth_note_on(int freq, float amp)
 {
-	//if (!noteDown) frequency = freq;
-	targetFreq[track] = freq;
+	frequency[track] = freq;
 	amplitude[track] = amp;
 	noteDown[track] = 1;
 	
@@ -54,9 +53,7 @@ void synth_tick()
 		value += waveform[(int)lerp(0, wavelength, (float)(timer % maxValue) / maxValue)] * amplitude[i];
 
 		if (amptimer == 0)
-		{
-			frequency[i] = lerp(frequency[i], targetFreq[i], 0.5);
-	
+		{	
 			if (noteDown[i])
 			{
 				amplitude[i] *= 0.995;
