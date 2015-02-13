@@ -57,4 +57,9 @@ install:
 	cp $(EXECNAME).bin /media/rf728/MBED &
 	sync
 	@echo "Now press the reset button on all MBED file systems"
+	
+quick:
+	make clean
+	make all
+	make install
 

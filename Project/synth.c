@@ -12,6 +12,7 @@ int frequency[TRACKS];
 int targetFreq[TRACKS];
 
 int noteDown[TRACKS];
+//float fadeIn[TRACKS];
 int wavelength = (sizeof(waveform)/sizeof(waveform[0]));
 
 int timer = 0;
@@ -28,6 +29,7 @@ void synth_init()
 void synth_note_on(int freq, float amp)
 {
 	frequency[track] = freq;
+	//fadeIn[track] = fadeIn[track] * amplitude[track];
 	amplitude[track] = amp;
 	noteDown[track] = 1;
 	
@@ -50,18 +52,12 @@ void synth_tick()
 	for (i = 0; i < TRACKS; i++) {
 		int maxValue = ((INT_ONE_SEC / UPDATE) / frequency[i]);
 	
-		value += waveform[(int)lerp(0, wavelength, (float)(timer % maxValue) / maxValue)] * amplitude[i];
+		value += waveform[(int)lerp(0, wavelength, (float)(timer % maxValue) / maxValue)] * amplitude[i];// * fadeIn[i];
 
 		if (amptimer == 0)
 		{	
-			if (noteDown[i])
-			{
-				amplitude[i] *= 0.995;
-			}
-			else
-			{
-				amplitude[i] *= 0.95;
-			}
+			//fadeIn[i] = lerp(fadeIn[i], 1, 0.5f);
+			amplitude[i] = lerp(amplitude[i], 0, noteDown[i] ? 0.03 : 0.05);	
 		}
 	}
 	amptimer = (amptimer + 1) % 100;
