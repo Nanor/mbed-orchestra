@@ -31,6 +31,11 @@ int read_usb_serial_none_blocking(char *buf,int length)
 	return(UART_Receive((LPC_UART_TypeDef *)LPC_UART0, (uint8_t *)buf, length, NONE_BLOCKING));
 }
 
+uint8_t read_usb_serial_byte()
+{
+	return(UART_ReceiveByte((LPC_UART_TypeDef *)LPC_UART0));
+}
+
 void DEBUG_init(void)
 // init code for the USB serial line
 {

@@ -34,7 +34,7 @@ LDFLAGS+=-L$(CMSIS)/lib -lDriversLPC17xxgnu
 
 EXECNAME	= bin/main
 
-OBJ		= tim.o i2c.o debug.o keypad.o lcd.o dac.o synth.o can.o menu.o main.o
+OBJ		= tim.o i2c.o debug.o keypad.o lcd.o dac.o synth.o john.o can.o menu.o main.o
 
 all: 	serial
 	@echo "Build finished"
@@ -54,7 +54,7 @@ clean:
 # install software to board, remember to sync the file systems
 install:
 	@echo "Copying " $(EXECNAME) "to the MBED file system"
-	cp $(EXECNAME).bin /media/rf728/MBED &
+	cp $(EXECNAME).bin /media/jk902/MBED &
 	sync
 	@echo "Now press the reset button on all MBED file systems"
 	

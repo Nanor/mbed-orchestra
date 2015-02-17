@@ -84,6 +84,7 @@ void CAN_IRQHandler()
 		if (RXMsg.len == 8)
 		{
 			// Text data
+			/*
 			DEBUG_write_int("%c", RXMsg.dataA[0]);
 			DEBUG_write_int("%c", RXMsg.dataA[1]);
 			DEBUG_write_int("%c", RXMsg.dataA[2]);
@@ -92,6 +93,7 @@ void CAN_IRQHandler()
 			DEBUG_write_int("%c", RXMsg.dataB[1]);
 			DEBUG_write_int("%c", RXMsg.dataB[2]);
 			DEBUG_write_int("%c", RXMsg.dataB[3]);
+			*/
 		}
 		else
 		{

@@ -5,6 +5,7 @@
 #include "keypad.h"
 #include "can.h"
 #include "menu.h"
+#include "john.h"
 
 int main()
 {
@@ -17,8 +18,10 @@ int main()
 	synth_init();
 	CAN_init();
 	
-	menu_display();
+	//JOHN_serialTest();
 	
+	menu_display();	
+
 	while (1)
 	{
 		menu_update();
@@ -50,6 +53,7 @@ int main()
 	// Loop to allow interupts
 	while(1);
 	return(1);
+	
 }
 
 
