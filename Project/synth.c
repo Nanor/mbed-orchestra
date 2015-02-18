@@ -2,10 +2,10 @@
 #include "tim.h"
 #include <math.h>
 #include "synth.h"
+#include "waveform.h"
+#include "lpc17xx_pinsel.h"
 
-#include "waveform.c"
-
-#define TRACKS 3
+#define TRACKS 5
 
 float amplitude[TRACKS];
 int frequency[TRACKS];
@@ -13,17 +13,33 @@ int targetFreq[TRACKS];
 
 int noteDown[TRACKS];
 //float fadeIn[TRACKS];
-int wavelength = (sizeof(waveform)/sizeof(waveform[0]));
 
 int timer = 0;
 int amptimer = 0;
 
 int track = 0;
 
+int voice = 0;
+
+void incVoice() {
+	if (voice < VOICES-1)
+		voice++;
+}
+
+void decVoice() {
+	if (voice > 0)
+		voice--;
+}
+
+int getVoice() {
+	return voice;
+}
+
 void synth_init()
 {
 	DAC_init();
 	TIM_init();
+	makeWaves();
 }
 
 void synth_note_on(int freq, float amp)
@@ -52,7 +68,7 @@ void synth_tick()
 	for (i = 0; i < TRACKS; i++) {
 		int maxValue = ((INT_ONE_SEC / UPDATE) / frequency[i]);
 	
-		value += waveform[(int)lerp(0, wavelength, (float)(timer % maxValue) / maxValue)] * amplitude[i];// * fadeIn[i];
+		value += getValue((float)(timer % maxValue) / maxValue, voice) * amplitude[i];// * fadeIn[i];
 
 		if (amptimer == 0)
 		{	
@@ -62,7 +78,7 @@ void synth_tick()
 	}
 	amptimer = (amptimer + 1) % 100;
 	timer = (timer + 1) % (INT_ONE_SEC / UPDATE);
-	DAC_send((int)((value / TRACKS) * 512 + 511));
+	DAC_send((uint16_t)(((value / TRACKS) + 1) * (1 << 9)));
 }
 
 int note_to_freq(int note)
