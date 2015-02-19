@@ -2,6 +2,7 @@
 #include <lcd.h>
 #include <menu.h>
 #include "can.h"
+#include "synth.h"
 
 int menu_volume = 10;
 int menu_channel = 1;
@@ -10,9 +11,11 @@ int key_val = -1;
 void menu_display()
 {
 	LCD_clear();
-	LCD_write_int("Volume:  %2d", menu_volume);
-	LCD_set_pos(0, 1);
-	LCD_write_int("Channel: %2d", menu_channel);
+	LCD_write_int("Vol: %2d", menu_volume);
+	LCD_set_pos(8, 0);
+	LCD_write_int("Chan: %2d", menu_channel);
+	LCD_set_pos(0,1);
+	LCD_write_int("Voice: %2d", getVoice());
 }
 
 void menu_update()
@@ -26,7 +29,7 @@ void menu_update()
 	
 	switch (key_val)
 	{
-		case 1:
+		case 2:
 			if (menu_volume > 0)
 			{
 				menu_volume--;
@@ -34,7 +37,7 @@ void menu_update()
 				menu_display();
 			}
 			break;
-		case 2:
+		case 3:
 			if (menu_volume < 10)
 			{
 				menu_volume++;
@@ -42,7 +45,7 @@ void menu_update()
 				menu_display();
 			}
 			break;
-		case 4:
+		case 5:
 			if (menu_channel > 1)
 			{
 				synth_note_off(-1);
@@ -51,7 +54,7 @@ void menu_update()
 				menu_display();		
 			}
 			break;
-		case 5:
+		case 6:
 			if (menu_channel < 16)
 			{
 				synth_note_off(-1);
@@ -60,21 +63,25 @@ void menu_update()
 				menu_display();		
 			}
 			break;
-		case 7:
+		case 4:
 			menu_channel = find_channel_down(menu_channel);
 			synth_note_off(-1);
 			set_channel(menu_channel);
 			menu_display();		
 			break;
-		case 8:
+		case 11:
 			menu_channel = find_channel_up(menu_channel);
 			synth_note_off(-1);
 			set_channel(menu_channel);
 			menu_display();		
 			break;
-		case 13:
-			DEBUG_write("D\r\n");
-			synth_note_on(note_to_freq(69), 0.5);
+		case 8:
+			decVoice();
+			menu_display();
+			break;
+		case 9:
+			incVoice();
+			menu_display();
 			break;
 	}
 }

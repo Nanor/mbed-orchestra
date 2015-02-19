@@ -1,3 +1,5 @@
+void incVoice();
+void decVoice();
 void synth_init();
 void synth_tick();
 void synth_note_on(int freq, float amp);
