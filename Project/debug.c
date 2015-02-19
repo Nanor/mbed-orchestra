@@ -25,16 +25,26 @@ int write_usb_serial_blocking(char *buf,int length)
 	return(UART_Send((LPC_UART_TypeDef *)LPC_UART0,(uint8_t *)buf,length, BLOCKING));
 }
 
+void USB_writeByte(uint8_t byte)
+{
+	UART_SendByte((LPC_UART_TypeDef *)LPC_UART0, byte);
+}
+
 // Read options
 int read_usb_serial_none_blocking(char *buf,int length)
 {
 	return(UART_Receive((LPC_UART_TypeDef *)LPC_UART0, (uint8_t *)buf, length, NONE_BLOCKING));
 }
 
-uint8_t read_usb_serial_byte()
+uint8_t USB_readByte()
 {
 	return(UART_ReceiveByte((LPC_UART_TypeDef *)LPC_UART0));
 }
+
+uint8_t USB_readByte_blocking(){
+	
+}
+
 
 void DEBUG_init(void)
 // init code for the USB serial line

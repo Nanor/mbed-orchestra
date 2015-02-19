@@ -3,6 +3,7 @@
 #include "lpc17xx_gpio.h"
 #include "tim.h"
 #include "synth.h"
+#include "john.h"
 
 void TIM_init()
 {
