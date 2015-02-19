@@ -78,7 +78,7 @@ void synth_tick()
 	}
 	amptimer = (amptimer + 1) % 100;
 	timer = (timer + 1) % (INT_ONE_SEC / UPDATE);
-	DAC_send((uint16_t)(((value / TRACKS) + 1) * (1 << 9)));
+	DAC_send((uint16_t)(((value) + 1) * (1 << 9)));
 }
 
 int note_to_freq(int note)
