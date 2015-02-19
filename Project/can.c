@@ -18,7 +18,6 @@
 CAN_MSG_Type TXMsg, RXMsg; 
 int channel = 1;
 
-float mainVolume = 1.0f;
 int canActive[16];
 
 void CAN_init()
@@ -118,7 +117,7 @@ void CAN_IRQHandler()
 												
 				if (control == ON)
 				{
-					synth_note_on(note_to_freq(note), ((float)volume / pow(2,8)) * mainVolume);
+					synth_note_on(note_to_freq(note), ((float)volume / pow(2,8)));
 				}
 				else
 				{
@@ -146,38 +145,45 @@ void CAN_IRQHandler()
 	}
 }
 
-int find_channel_up(int current)
+void find_channel_up()
 {
 	int i;
-	for(i = current-1+1; i < 16; i++)
+	for(i = channel-1+1; i < 16; i++)
 	{
 		if(canActive[i])
 		{
-			return i+1;
+			channel = i+1;
+			return;
 		}
 	}
-	return current;
 }
 
-int find_channel_down(int current)
+void find_channel_down()
 {
 	int i;
-	for(i = current-1-1; i >= 0; i--)
+	for(i = channel-1-1; i >= 0; i--)
 	{
 		if(canActive[i])
 		{
-			return i+1;
+			channel = i+1;
+			return;
 		}
 	}
-	return current;
 }
 
-void set_volume(float vol)
+void channelUp()
 {
-	mainVolume = vol;
+	if (channel < 16)
+		channel++;
 }
 
-void set_channel(int chan)
+void channelDown()
 {
-	channel = chan;
+	if (channel > 1)
+		channel--;
+}
+
+int getChannel()
+{
+	return channel;
 }

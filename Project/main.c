@@ -9,11 +9,13 @@
 
 int main()
 {
+
 	// Peripheral initialisation
 	I2C_init();
-	DEBUG_init();	
 	LCD_init();
-
+	LCD_write("Loading...");
+	DEBUG_init();	
+	
 	// Function initialisation
 	synth_init();
 	CAN_init();

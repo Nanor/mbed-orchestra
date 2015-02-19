@@ -1,7 +1,8 @@
 void CAN_init();
 void CAN_InitMessage(void);
 void CAN_IRQHandler();
-void set_channel(int);
-void set_volume(float);
-int find_channel_up(int current);
-int find_channel_down(int current);
+void find_channel_up();
+void find_channel_down();
+void channelUp();
+void channelDown();
+int getChannel();
