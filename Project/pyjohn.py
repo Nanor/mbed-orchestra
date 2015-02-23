@@ -1,10 +1,14 @@
-import serial, time, wave, struct
+import serial, wave, struct
 
-def getWav(filename):
+
+###############################################
+### 			Wave Functions				###
+###############################################
+def readWav(filename):
 	wav = wave.open(("Samples/"+filename), 'r')
 	data = []
 
-	length = wav.getnframes()
+	length = wav.readnframes()
 	for i in range(0,10000):
 		waveData = wav.readframes(1)
 		data.append(struct.unpack("<h", waveData)[0])
@@ -22,10 +26,13 @@ def normWave(data):
 		if data[i] == 0:
 			data[i] += 1
 	
+###############################################
+### 			Binary Functions			###
+###############################################
 
 def int2bin(d):
 	a = d >> 8
-	b = d % (2 ** 9)
+	b = d % (2 ** 8)
 	out = [a,b]
 	for i in range(2):
 		if out[i] == 0:
@@ -33,67 +40,101 @@ def int2bin(d):
 	
 	return out
 
+def bin2int(ls):
+	if ls[0] == 255:
+		a = 0
+	else:
+		a = ls[0] << 8
+	
+	return(a + ls[1])
+			
 
-def sendData(data, ser):
-	length = len(data)
+###############################################
+### 			Serial Functions			###
+###############################################
+
+def writeLen(length, ser):
+	
 	lengthArray = int2bin(length)
 	
-	print("Sending Length")
 	for i in lengthArray:
-		print("sending", i)
 		ser.write(chr(i))
+		#print(ord(ser.read()))
 		
+	inp = ser.read()
+	if inp != 'a':
+		print "Error"
+		
+def readLen(ser):
+	lengthArray = []
+	
 	for i in range(2):
-		inp = ser.read(1)
-		print(ord(inp))
+		inp = ord(ser.read())
+		lengthArray.append(inp)
+		
+	length = bin2int(lengthArray)
 	
-	print("Waiting for length confirmation")
-	inp = ser.read(1)
-	print(ord(inp))
+	ser.write('a')
 	
-	print("Sending data")
+	return(length)
+	
+	
+def write8Bytes(data, ser):
+
+	if len(data) != 8:
+		raise ValueError	
+	
 	for i in data:
-		print("sending", i)
-		ser.write(chr(i))
+		ser.write(chr((i%100)+1))
+		
+	inp = ser.read()
+	if inp != 'a':
+		print "Error"
+		
+def read8Bytes(ser):
+	data = []
 	
-	print("Waiting for data confirmation")
-	inp = ser.read(1)
-	print(inp)
+	for i in range(8):
+		inp = ord(ser.read())
+		data.append(inp)
 	
-	print("Receiving data")
-	for i in range(19):
-		inp = ser.read(1)
-		print("receiving", ord(inp))
-
-	ser.close()
-
-def readFor(n, ser, printChar):
-	if n == -1:
-		while(1):
-			if printChar:
-				print(ser.read(1))
-			else:
-				print(ord(ser.read(1)))
-	for i in range(n):
-		if printChar:
-			print(ser.read(1))
-		else:
-			print(ord(ser.read(1)))
-			
-def write(wave):
-	file1 = open("johnscoolwaveform.c", 'w')
-	file1.write("#include \"lpc_types.h\" \n")
-	file1.write("uint8_t johnscoolwaveform[] = \n")
-	file1.write(str(wave).replace('[','{').replace(']', '}')+';')
+	ser.write('a')
 	
-	file1.close()
+	return data
 
-wave = getWav("piano.wav")
-print(len(wave))
-write(wave)
-#ser = serial.Serial("/dev/ttyACM1")
-#readFor(-1, ser, 0)
-#sendData(range(1, 20), ser)
+def writeDataBlock(data, ser):
+	if(len(data)%8 != 0):
+		for i in range(8-(len(data)%8)):
+			data.append(1)
+	
+	writeLen(len(data), ser)
+	
+	while len(data) >= 8:
+		current = data[0:8]
+		data = data[8:]
+		write8Bytes(current, ser)
+		
+def readDataBlock(ser):
+	length = readLen(ser)
 
+	data = []
+	for i in range(length/8):
+		current = read8Bytes(ser)
+		for j in current:
+			data.append(j)
+	
+	return data
 
+###############################################
+### 				Main					###
+###############################################
+
+ser = serial.Serial("/dev/ttyACM0")
+data = []
+for i in range(1000):
+	data.append((i))
+
+writeDataBlock(data, ser)
+data2 = readDataBlock(ser)
+print(data2)
 

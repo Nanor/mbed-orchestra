@@ -41,10 +41,6 @@ uint8_t USB_readByte()
 	return(UART_ReceiveByte((LPC_UART_TypeDef *)LPC_UART0));
 }
 
-uint8_t USB_readByte_blocking(){
-	
-}
-
 
 void DEBUG_init(void)
 // init code for the USB serial line
