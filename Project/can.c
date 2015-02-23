@@ -117,7 +117,7 @@ void CAN_IRQHandler()
 												
 				if (control == ON)
 				{
-					synth_note_on(note_to_freq(note), ((float)volume / pow(2,8)));
+					synth_note_on(note_to_freq(note), volume);
 				}
 				else
 				{

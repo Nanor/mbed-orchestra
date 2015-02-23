@@ -7,7 +7,7 @@
 
 #define TRACKS 5
 
-float amplitude[TRACKS];
+int amplitude[TRACKS];
 int frequency[TRACKS];
 int targetFreq[TRACKS];
 
@@ -34,31 +34,17 @@ int getVolume() {
 	return mainVolume;
 }
 
-void incVoice() {
-	if (voice < VOICES-1)
-		voice++;
-}
-
-void decVoice() {
-	if (voice > 0)
-		voice--;
-}
-
-int getVoice() {
-	return voice;
-}
-
 void synth_init()
 {
 	DAC_init();
 	TIM_init();
-	makeWaves();
+	makeWave();
 }
 
 void synth_note_on(int freq, float amp)
 {
 	frequency[track] = freq;
-	fadeIn[track] = fadeIn[track] * amplitude[track];
+	fadeIn[track] = 0;
 	amplitude[track] = amp;
 	noteDown[track] = 1;
 	
@@ -77,21 +63,22 @@ void synth_note_off(int freq)
 void synth_tick()
 {	
 	int i;
-	float value = 0;
-	for (i = 0; i < TRACKS; i++) {
+	int value = 0;
+	for (i = 0; i < TRACKS; i++)
+	{
 		int maxValue = ((INT_ONE_SEC / UPDATE) / frequency[i]);
 	
-		value += getValue((float)(timer % maxValue) / maxValue, voice) * amplitude[i] * fadeIn[i];
+		value += getValue((float)(timer % maxValue) / maxValue) * amplitude[i] * fadeIn[i];
 
 		if (amptimer == 0)
 		{	
 			fadeIn[i] = lerp(fadeIn[i], 1, 0.2f);
-			amplitude[i] = lerp(amplitude[i], 0, noteDown[i] ? 0.03 : 0.05);	
+			amplitude[i] *= noteDown[i] ? 0.97 : 0.95;
 		}
 	}
 	amptimer = (amptimer + 1) % 100;
 	timer = (timer + 1) % (INT_ONE_SEC / UPDATE);
-	DAC_send((uint16_t)(((value + 1) * mainVolume / 10) * (1 << 9)));
+	DAC_send( (uint16_t) (((value) * mainVolume) >> 10) + 512 );
 }
 
 int note_to_freq(int note)

@@ -1,37 +1,70 @@
 #include "waveform.h"
 #include "math.h"
-#include "lpc17xx_pinsel.h"
 
 #define WAVELENGTH 500
 
-int waveform[VOICES][WAVELENGTH];
+int voice;
+int waveform[WAVELENGTH];
+int safe = 0;
 
-void makeWaves() {
-
-	float values[VOICES][5] =	{
-															{  1,  0,  0,  0,  0},
-															{.7f,.3f,  0,  0,  0},
-															{.7f,  0,.3f,  0,  0},
-															{  0,  0,  0,  0,  0},
-															{.8f,  0,  0,.1f,.1f},
-														};
+void makeWave() {
+	safe = 0;
+	int values[VOICES][5] =	{
+														{10, 0, 0, 0, 0},
+														{ 7, 3, 0, 0, 0},
+														{ 7, 0, 3, 0, 0},
+														{ 0, 0, 0, 0, 0},
+														{ 8, 0, 0, 1, 1},
+													};
 
 	int x;
-	int voice;
 	int harmonic;
-	for (x = 0; x < WAVELENGTH; x++) {
-		for (voice = 0; voice < VOICES; voice++) {
+	if (voice != 3)
+	{
+		for (x = 0; x < WAVELENGTH; x++)
+		{
 			float val = 0;
-			for (harmonic = 0; harmonic < 5; harmonic++) {
+			for (harmonic = 0; harmonic < 5; harmonic++)
+			{
 				val += values[voice][harmonic] * sin(M_PI * 2 * (harmonic+1) * x / WAVELENGTH);
 			}
-			waveform[voice][x] = (int)(val * 127);
+			waveform[x] = (int)((val) * 12);
 		}
-		waveform[3][x] = 64 * (x < WAVELENGTH/2 ? -1 : 1);
+	}
+	else
+	{
+		for (x = 0; x < WAVELENGTH; x++)
+		{
+			waveform[x] = 64 * (x < WAVELENGTH/2 ? -1 : 1);
+		}
+	}
+	safe = 1;
+}
+
+int getValue(float point) {
+	if (safe)
+		return (waveform[(int)(WAVELENGTH * point)]);
+	else
+		return 0;
+}
+
+void incVoice() {
+	if (voice < VOICES-1)
+	{
+		voice++;
+		makeWave();
 	}
 }
 
-float getValue(float point, int voice) {
-	return (float)(waveform[voice][(int)(WAVELENGTH * point)]) / 127;
+void decVoice() {
+	if (voice > 0)
+	{
+		voice--;
+		makeWave();
+	}
+}
+
+int getVoice() {
+	return voice;
 }
 
