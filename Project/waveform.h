@@ -1,4 +1,7 @@
-float getValue(float point, int voice);
-void makeWaves();
+int getValue(float point);
+void makeWave();
+void incVoice();
+void decVoice();
+int getVoice();
 
-#define VOICES 4
+#define VOICES 5
