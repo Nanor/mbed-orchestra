@@ -73,7 +73,7 @@ void synth_tick()
 		if (amptimer == 0)
 		{	
 			fadeIn[i] = lerp(fadeIn[i], 1, 0.2f);
-			amplitude[i] *= noteDown[i] ? 0.999 : 0.99;
+			amplitude[i] *= noteDown[i] ? 0.99 : 0.95;
 		}
 	}
 	amptimer = (amptimer + 1) % 100;
