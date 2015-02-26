@@ -54,12 +54,9 @@ clean:
 # install software to board, remember to sync the file systems
 install:
 	@echo "Copying " $(EXECNAME) "to the MBED file system"
-	cp $(EXECNAME).bin /media/jk902/MBED &
+	cp $(EXECNAME).bin /media/rf728/MBED &
 	sync
 	@echo "Now press the reset button on all MBED file systems"
 	
-quick:
-	make clean
-	make all
-	make install
+quick: clean all install
 

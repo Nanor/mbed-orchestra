@@ -4,4 +4,4 @@ void incVoice();
 void decVoice();
 int getVoice();
 
-#define VOICES 5
+#define VOICES 4

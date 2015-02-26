@@ -45,12 +45,17 @@ int getWaveSynthStatus()
 }
 
 
-void switchSynth()
+void switchSynth(int synth)
 {
-	waveSynth = !waveSynth;
+	waveSynth = synth;
 	if(!waveSynth)
 	{
+		// Clean up samples
 		WAVE_disable();
+	}
+	else
+	{
+		// Clean up synth.
 	}
 }
 
