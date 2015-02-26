@@ -73,12 +73,21 @@ void synth_tick()
 		if (amptimer == 0)
 		{	
 			fadeIn[i] = lerp(fadeIn[i], 1, 0.2f);
-			amplitude[i] *= noteDown[i] ? 0.97 : 0.95;
+			amplitude[i] *= noteDown[i] ? 0.999 : 0.99;
 		}
 	}
 	amptimer = (amptimer + 1) % 100;
 	timer = (timer + 1) % (INT_ONE_SEC / UPDATE);
-	DAC_send( (uint16_t) (((value) * mainVolume) >> 10) + 512 );
+	DAC_send( (uint16_t) clamp((((value) * mainVolume) >> 10) + 512, 0, 1023) );
+}
+
+int clamp(int value, int min, int max)
+{
+	if (value < min)
+		return min;
+	if (value > max)
+		return max;
+	return value;
 }
 
 int note_to_freq(int note)
