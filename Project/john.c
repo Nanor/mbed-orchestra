@@ -6,6 +6,8 @@
 #include "synth.h"
 #include <string.h>
 
+#define MAX_SAMPLES 5
+
 
 void SERIAL_wait(char* str){
 	int key = KEYPAD_get_key();
@@ -236,6 +238,9 @@ void WAVE_synthtick(){
 }
 
 void WAVE_noteOn(int n){
+	if(n >= 35 && n <= 36){
+		waveInfo[1].waveReadPos = waveInfo[1].waveStart;
+	}
 	waveInfo[n].waveReadPos = waveInfo[n].waveStart;
 }
 

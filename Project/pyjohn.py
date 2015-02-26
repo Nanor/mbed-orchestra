@@ -143,7 +143,7 @@ def writeWave(filename, ser):
 	wav.close()
 	
 	normWave(data)
-	print "Data Length " + len(data)
+	print "Data Length " + str(len(data))
 	writeDataBlock(data, ser)
 	
 	print("Data sent")
