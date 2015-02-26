@@ -56,6 +56,7 @@ void switchSynth(int synth)
 	else
 	{
 		// Clean up synth.
+		synth_clean();
 	}
 }
 

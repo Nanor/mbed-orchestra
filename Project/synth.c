@@ -60,6 +60,15 @@ void synth_note_off(int freq)
 	}
 }
 
+void synth_clean()
+{
+	int i;
+	for (i = 0; i < TRACKS; i++)
+	{
+		amplitude[i] = 0;
+	}
+}
+
 void synth_tick()
 {	
 	int i;

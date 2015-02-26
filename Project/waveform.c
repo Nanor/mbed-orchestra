@@ -1,5 +1,4 @@
 #include "waveform.h"
-#include "tim.h"
 #include "math.h"
 
 #define WAVELENGTH 500
@@ -48,12 +47,12 @@ void incVoice() {
 		voice++;
 		if (voice <= VOICES)
 		{
-			switchSynth(0);
+			switchSynth(1);
 			makeWave();
 		}
 		else
 		{
-			switchSynth(1);
+			switchSynth(0);
 		}
 	}
 	
@@ -65,12 +64,12 @@ void decVoice() {
 		voice--;
 		if (voice <= VOICES)
 		{
-			switchSynth(0);
+			switchSynth(1);
 			makeWave();
 		}
 		else
 		{
-			switchSynth(1);
+			switchSynth(0);
 		}
 	}
 }

@@ -3,6 +3,7 @@ int getVolume();
 void incVoice();
 void decVoice();
 void synth_init();
+void synth_clean();
 void synth_tick();
 void synth_note_on(int freq, float amp);
 void synth_note_off();
