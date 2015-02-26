@@ -20,7 +20,7 @@ int main()
 	synth_init();
 	CAN_init();
 	
-	//JOHN_serialTest();
+	SERIAL_serialTest();
 	
 	menu_display();	
 
