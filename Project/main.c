@@ -17,10 +17,10 @@ int main()
 	DEBUG_init();	
 	
 	// Function initialisation
+	WAVE_init();
 	synth_init();
 	CAN_init();
-	
-	SERIAL_serialTest();
+
 	
 	menu_display();	
 

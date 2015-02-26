@@ -1,30 +1,4 @@
-import serial, wave, struct
-
-
-###############################################
-### 			Wave Functions				###
-###############################################
-def readWav(filename):
-	wav = wave.open(("Samples/"+filename), 'r')
-	data = []
-
-	length = wav.readnframes()
-	for i in range(0,10000):
-		waveData = wav.readframes(1)
-		data.append(struct.unpack("<h", waveData)[0])
-		
-	wav.close()
-	
-	normWave(data)
-	
-	return data
-
-def normWave(data):
-	maxVal = float(max(data))
-	for i in range(len(data)):
-		data[i] = int(((data[i]+maxVal)/(2*maxVal)) * 255)
-		if data[i] == 0:
-			data[i] += 1
+import serial, wave, struct, math
 	
 ###############################################
 ### 			Binary Functions			###
@@ -53,19 +27,50 @@ def bin2int(ls):
 ### 			Serial Functions			###
 ###############################################
 
-def writeLen(length, ser):
+def write2Bytes(length, ser):
+	#print("write2")
 	
 	lengthArray = int2bin(length)
 	
 	for i in lengthArray:
 		ser.write(chr(i))
-		#print(ord(ser.read()))
 		
 	inp = ser.read()
+	#print("confirming", inp)
+	if inp != 'a':
+		print "Error"
+
+	
+def write8Bytes(data, ser):
+	#print("write8")
+	if len(data) != 8:
+		raise ValueError	
+	
+	for i in data:
+		try:
+			ser.write(chr(i))
+		except ValueError:
+			print("ValueError", i)
+			quit()
+	
+	inp = ser.read()
+	#print("confirming", inp)
 	if inp != 'a':
 		print "Error"
 		
-def readLen(ser):
+				
+def writeDataBlock(data, ser):
+	if(len(data)%8 != 0):
+		for i in range(8-(len(data)%8)):
+			data.append(1)
+			
+	while len(data) >= 8:
+		current = data[0:8]
+		data = data[8:]
+		write8Bytes(current, ser)
+		
+		
+def read2Bytes(ser):
 	lengthArray = []
 	
 	for i in range(2):
@@ -77,19 +82,7 @@ def readLen(ser):
 	ser.write('a')
 	
 	return(length)
-	
-	
-def write8Bytes(data, ser):
-
-	if len(data) != 8:
-		raise ValueError	
-	
-	for i in data:
-		ser.write(chr((i%100)+1))
 		
-	inp = ser.read()
-	if inp != 'a':
-		print "Error"
 		
 def read8Bytes(ser):
 	data = []
@@ -101,21 +94,9 @@ def read8Bytes(ser):
 	ser.write('a')
 	
 	return data
-
-def writeDataBlock(data, ser):
-	if(len(data)%8 != 0):
-		for i in range(8-(len(data)%8)):
-			data.append(1)
-	
-	writeLen(len(data), ser)
-	
-	while len(data) >= 8:
-		current = data[0:8]
-		data = data[8:]
-		write8Bytes(current, ser)
 		
 def readDataBlock(ser):
-	length = readLen(ser)
+	length = read2Bytes(ser)
 
 	data = []
 	for i in range(length/8):
@@ -124,17 +105,58 @@ def readDataBlock(ser):
 			data.append(j)
 	
 	return data
+	
+	
+###############################################
+### 			Wave Functions				###
+###############################################
+
+def normWave(data):
+	dataMax = max([math.fabs(min(data)), max(data)])
+	maxVal = (1 << 16)
+	maxFactor = maxVal / dataMax
+	targetMax = 128
+	
+	for i in range(len(data)):
+		data[i] = int(((float(data[i])*maxFactor)/maxVal)*targetMax)+targetMax
+		if data[i] == 0:
+			data[i] = 1
+
+
+			
+def writeWave(filename, ser):
+	print("Sending wave")
+	path = "Samples/" + filename
+	print(path)
+	wav = wave.open(path, 'r')
+	data = []
+
+	length = wav.getnframes()
+	write2Bytes(length, ser)
+	sampRate = wav.getframerate()
+	write2Bytes(sampRate, ser)
+	
+	for i in range(0,length):
+		waveData = wav.readframes(1)
+		data.append(struct.unpack("<h", waveData)[0])
+		
+	wav.close()
+	
+	normWave(data)
+	print "Data Length " + len(data)
+	writeDataBlock(data, ser)
+	
+	print("Data sent")
+
 
 ###############################################
 ### 				Main					###
 ###############################################
 
 ser = serial.Serial("/dev/ttyACM0")
-data = []
-for i in range(1000):
-	data.append((i))
 
-writeDataBlock(data, ser)
-data2 = readDataBlock(ser)
-print(data2)
+while(1):
+	if(ser.read() == 'z'):
+		writeWave("coin2.wav", ser)
+
 

@@ -1,3 +1,4 @@
-void JOHN_serialTest();
-void JOHN_waitForInput();
-void JOHN_synthtick();
+void WAVE_synthtick();
+void WAVE_noteOn(int n);
+void WAVE_addToArray(int n);
+void WAVE_init();

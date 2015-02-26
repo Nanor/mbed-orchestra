@@ -5,6 +5,8 @@
 #include "synth.h"
 #include "john.h"
 
+int waveSynth = 0;
+
 void TIM_init()
 {
 	TIM_TIMERCFG_Type config;
@@ -37,11 +39,33 @@ void TIM_update_match(int freq)
 	TIM_Cmd(LPC_TIM0,ENABLE);
 }
 
+int getWaveSynthStatus()
+{
+	return(waveSynth);
+}
+
+
+void switchSynth()
+{
+	waveSynth = !waveSynth;
+	if(!waveSynth)
+	{
+		WAVE_disable();
+	}
+}
+
 void TIMER0_IRQHandler()
 {
 	if (TIM_GetIntStatus(LPC_TIM0, TIM_MR0_INT)== SET)
 	{
-		synth_tick();
+		if(waveSynth)
+		{
+			WAVE_synthtick();
+		}
+		else
+		{
+			synth_tick();	
+		}
 	}
 	TIM_ClearIntPending(LPC_TIM0, TIM_MR0_INT);	
 }

@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "lpc17xx_pinsel.h"
 #include "synth.h"
+#include "john.h"
 #include "math.h"
 
 #define NONE 0
@@ -83,7 +84,7 @@ void CAN_IRQHandler()
 		if (RXMsg.len == 8)
 		{
 			// Text data
-			/*
+			
 			DEBUG_write_int("%c", RXMsg.dataA[0]);
 			DEBUG_write_int("%c", RXMsg.dataA[1]);
 			DEBUG_write_int("%c", RXMsg.dataA[2]);
@@ -92,7 +93,6 @@ void CAN_IRQHandler()
 			DEBUG_write_int("%c", RXMsg.dataB[1]);
 			DEBUG_write_int("%c", RXMsg.dataB[2]);
 			DEBUG_write_int("%c", RXMsg.dataB[3]);
-			*/
 		}
 		else
 		{
@@ -117,6 +117,9 @@ void CAN_IRQHandler()
 												
 				if (control == ON)
 				{
+					if(channel == 10){
+						WAVE_addToArray(note);
+					}
 					synth_note_on(note_to_freq(note), volume);
 				}
 				else

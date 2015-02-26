@@ -2,7 +2,9 @@
 #include <lcd.h>
 #include <menu.h>
 #include "can.h"
+#include "tim.h"
 #include "synth.h"
+#include "john.h"
 
 int key_val = -1;
 
@@ -58,6 +60,11 @@ void menu_update()
 			break;
 		case 9:
 			incVoice();
+			break;
+		case 13:
+			if(getWaveSynthStatus()){
+				WAVE_noteOn(0);
+			}
 			break;
 	}
 	menu_display();

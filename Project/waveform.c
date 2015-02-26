@@ -49,11 +49,13 @@ int getValue(float point) {
 }
 
 void incVoice() {
-	if (voice < VOICES-1)
+	if (voice < VOICES+1)
 	{
 		voice++;
+	
 		makeWave();
 	}
+	
 }
 
 void decVoice() {
