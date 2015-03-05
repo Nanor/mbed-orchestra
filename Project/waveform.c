@@ -42,17 +42,17 @@ int getValue(float point) {
 }
 
 void incVoice() {
-	if (voice < VOICES+1)
+	if (voice < VOICES)
 	{
 		voice++;
 		if (voice <= VOICES)
 		{
-			switchSynth(1);
+			switchSynth(0);
 			makeWave();
 		}
 		else
 		{
-			switchSynth(0);
+			switchSynth(1);
 		}
 	}
 	
@@ -64,12 +64,12 @@ void decVoice() {
 		voice--;
 		if (voice <= VOICES)
 		{
-			switchSynth(1);
+			switchSynth(0);
 			makeWave();
 		}
 		else
 		{
-			switchSynth(0);
+			switchSynth(1);
 		}
 	}
 }
